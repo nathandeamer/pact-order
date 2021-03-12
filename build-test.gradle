@@ -1,0 +1,8 @@
+test {
+    exclude '**/*Pact*'
+}
+
+task pactProvider(type: Test) {
+    systemProperties System.properties
+    include '**/pact/*ProviderPactTest*'
+}

@@ -1,0 +1,4 @@
+server:
+  servlet:
+    context-path: /orders
+  port: 8080
