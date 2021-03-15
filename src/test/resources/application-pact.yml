@@ -1,4 +1,0 @@
-pactbroker:
-  host: ${ND_PACT_BROKER_HOST}
-  scheme: https
-  token: ${ND_PACT_BROKER_TOKEN}
