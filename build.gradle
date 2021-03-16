@@ -18,7 +18,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.kafka:spring-kafka'
 
-	testCompile 'au.com.dius.pact.provider:junit:4.1.8'
 	testCompile 'au.com.dius.pact.provider:junit5:4.1.8'
 	testCompile 'au.com.dius.pact.provider:spring:4.1.8'
 
@@ -30,4 +29,5 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+	systemProperties System.properties // Important. Allow -D system properties to be passed in.
 }
