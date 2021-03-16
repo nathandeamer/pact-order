@@ -1,4 +1,4 @@
-package com.nathandeamer.mobileapp.pact;
+package com.nathandeamer.orders;
 
 import au.com.dius.pact.provider.junit5.HttpTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
@@ -28,7 +28,7 @@ import java.util.Collections;
 @Provider("orders")
 @PactBroker(scheme = "https", host = "${ND_PACT_BROKER_HOST}", authentication = @PactBrokerAuth(token = "${ND_PACT_BROKER_TOKEN}"))
 @VerificationReports(value={"console", "markdown", "json"}, reportDir = "build/pact/reports")
-public class OrderProviderPactTest extends ProviderPactTest {
+public class OrderProviderPactTest {
 
   @Autowired
   private OrdersRepository ordersRepository;
