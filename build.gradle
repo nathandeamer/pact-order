@@ -2,7 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.4.3'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
-	id "au.com.dius.pact" version "4.1.0"
+	id "au.com.dius.pact" version "4.2.7"
 }
 
 group = 'com.nathandeamer'
@@ -19,6 +19,7 @@ dependencies {
 	implementation 'org.springframework.kafka:spring-kafka'
 
 	testCompile 'au.com.dius.pact.provider:junit5:4.1.8'
+	testCompile 'au.com.dius:pact-jvm-consumer-junit5:4.1.8'
 	testCompile 'au.com.dius.pact.provider:spring:4.1.8'
 
 	runtimeOnly 'com.h2database:h2'

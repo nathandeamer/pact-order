@@ -13,9 +13,14 @@ import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Collections;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -24,7 +29,7 @@ import java.util.Collections;
 @VerificationReports(value={"console", "markdown", "json"}, reportDir = "build/pact/reports")
 public class OrderProviderPactTest {
 
-  @Autowired
+  @MockBean
   private OrdersRepository ordersRepository;
 
   @BeforeEach
@@ -38,17 +43,18 @@ public class OrderProviderPactTest {
     context.verifyInteraction();
   }
 
-  @State("An order with id 1234 exists")
-  public void givenAnOrderExists() {
-
-    ordersRepository.save(CustomerOrder.builder()
-            .id(1234)
-            .items(Collections.singletonList(CustomerOrder.Item.builder()
-                    .qty(1)
-                    .description("New York City")
-                    .sku("NYC")
-                    .build()))
-            .build());
+  @State("order exists")
+  public void orderExists() {
+    when(ordersRepository.findById(any())).thenReturn(
+            Optional.of(CustomerOrder.builder()
+                    .id(101)
+                    .items(Collections.singletonList(
+                            CustomerOrder.Item.builder()
+                                    .qty(1)
+                                    .description("Some Description")
+                                    .sku("POP")
+                                    .build()))
+                    .build()));
   }
 
 }

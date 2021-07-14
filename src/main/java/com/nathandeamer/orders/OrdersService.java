@@ -10,7 +10,9 @@ public class OrdersService {
   private final OrdersRepository ordersRepository;
 
   public CustomerOrder getOrder(int orderId) {
-    return ordersRepository.findById(orderId)
+    CustomerOrder order = ordersRepository.findById(orderId)
             .orElseThrow(RuntimeException::new);
+    order.getItems().clear(); // Dodgy business logic.
+    return order;
   }
 }
