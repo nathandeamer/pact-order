@@ -12,7 +12,6 @@ public class OrdersService {
   public CustomerOrder getOrder(int orderId) {
     CustomerOrder order = ordersRepository.findById(orderId)
             .orElseThrow(RuntimeException::new);
-    order.getItems().clear(); // Dodgy business logic.
     return order;
   }
 }
