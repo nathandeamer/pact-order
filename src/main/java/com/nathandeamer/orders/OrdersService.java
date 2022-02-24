@@ -10,8 +10,6 @@ public class OrdersService {
   private final OrdersRepository ordersRepository;
 
   public CustomerOrder getOrder(int orderId) {
-    CustomerOrder order = ordersRepository.findById(orderId)
-            .orElseThrow(RuntimeException::new);
-    return order;
+    return ordersRepository.findById(orderId).orElseThrow(RuntimeException::new);
   }
 }

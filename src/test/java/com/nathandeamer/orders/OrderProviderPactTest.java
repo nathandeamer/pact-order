@@ -16,15 +16,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Provider("orders")
-@PactBroker(scheme = "https", host = "${ND_PACT_BROKER_HOST}", authentication = @PactBrokerAuth(token = "${ND_PACT_BROKER_TOKEN}"))
+@PactBroker(url = "${PACT_BROKER_BASE_URL}", authentication = @PactBrokerAuth(token = "${PACT_BROKER_TOKEN}"))
 @VerificationReports(value={"console", "markdown", "json"}, reportDir = "build/pact/reports")
 public class OrderProviderPactTest {
 
@@ -42,10 +43,11 @@ public class OrderProviderPactTest {
     context.verifyInteraction();
   }
 
-  @State("order exists")
-  public void orderExists() {
-    when(ordersRepository.findById(any())).thenReturn(
-            Optional.of(CustomerOrder.builder()
+  @State("An order exists")
+  public Map<String, Object> orderExists() {
+      int orderNumber = 999666;
+      when(ordersRepository.findById(999666)).thenReturn(
+              Optional.of(CustomerOrder.builder()
                     .id(101)
                     .items(Collections.singletonList(
                             CustomerOrder.Item.builder()
@@ -54,6 +56,10 @@ public class OrderProviderPactTest {
                                     .sku("POP")
                                     .build()))
                     .build()));
+
+    Map<String, Object> map = new HashMap<>();
+    map.put("orderNumber", orderNumber);
+    return map;
   }
 
 }
