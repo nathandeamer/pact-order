@@ -24,7 +24,7 @@ After the provider tests have passed and the service has been deployed to an env
 
 Choose one of the following options:
 1. gradle: At time of writing the pact gradle plugin does not support recording a deployment
-2. pact-cli: `pact-broker record-deployment --pacticipant=orders --version=$(git rev-parse --short HEAD) --environment=dev`
+2. pact-cli: `pact-broker record-deployment --pacticipant=orders --version=$(git rev-parse HEAD) --environment=dev`
 3. docker:
 ```
 docker run --rm \
@@ -33,7 +33,7 @@ docker run --rm \
         pactfoundation/pact-cli:latest \
         broker record_deployment \
         --pacticipant=orders \
-        --version=$(git rev-parse --short HEAD) \
+        --version=$(git rev-parse HEAD) \
         --environment=dev
 ```
 
@@ -42,7 +42,7 @@ docker run --rm \
 ### Record a release
 When a version has been deployed to production we should record a release.
 1. gradle: At time of writing the pact gradle plugin does not support recording a deployment
-2. pact-cli: `pact-broker record-release --pacticipant=orders --version=$(git rev-parse --short HEAD) --environment=prod`
+2. pact-cli: `pact-broker record-release --pacticipant=orders --version=$(git rev-parse HEAD) --environment=prod`
 3. docker:
 ```
 docker run --rm \
@@ -51,7 +51,7 @@ docker run --rm \
         pactfoundation/pact-cli:latest \
         broker record_release \
         --pacticipant=orders \
-        --version=$(git rev-parse --short HEAD) \
+        --version=$(git rev-parse HEAD) \
         --environment=prod
 ```
 
