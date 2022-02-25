@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@Provider("orders")
+@Provider("pact-order")
 @PactBroker(url = "${PACT_BROKER_BASE_URL}", authentication = @PactBrokerAuth(token = "${PACT_BROKER_TOKEN}"))
 @VerificationReports(value={"console", "markdown", "json"}, reportDir = "build/pact/reports")
 public class OrderProviderPactTest {
