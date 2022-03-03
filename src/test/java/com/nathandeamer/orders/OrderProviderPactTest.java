@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -35,6 +36,21 @@ public class OrderProviderPactTest {
   @BeforeEach
   public void setupTestTarget(PactVerificationContext context) {
     context.setTarget(new HttpTestTarget("localhost", 8080));
+  }
+
+  // Used to verify the wiremock consumer.
+  @BeforeEach
+  public void setupProvider() {
+    when(ordersRepository.findById(eq(1234))).thenReturn(
+            Optional.of(CustomerOrder.builder()
+                    .id(1234)
+                    .items(Collections.singletonList(
+                            CustomerOrder.Item.builder()
+                                    .qty(1)
+                                    .description("New York City")
+                                    .sku("NYC")
+                                    .build()))
+                    .build()));
   }
 
   @TestTemplate
