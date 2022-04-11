@@ -1,5 +1,4 @@
-version: 2
-
+version: 2.1
 parameters:
   pact-consumer-name:
     type: string
