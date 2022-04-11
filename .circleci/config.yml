@@ -1,4 +1,22 @@
 version: 2
+
+parameters:
+  pact-consumer-name:
+    type: string
+    default: ""
+  pact-consumer-version-number:
+    type: string
+    default: ""
+  pact-consumer-version-tags:
+    type: string
+    default: ""
+  pact-consumer-version-branch:
+    type: string
+    default: ""
+  pact-url:
+      type: string
+      default: ""
+      
 jobs: # a collection of steps
   build:
     environment:
