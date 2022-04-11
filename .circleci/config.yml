@@ -66,14 +66,15 @@ jobs: # a collection of steps
               echo "No Consumer Pacts found. Continuing...."
             fi
       - run:
-          name: Run Provider Pact tests (consumer triggered webhook)
-          when: << pipeline.parameters.pact-webhook >>
+          name: Run Provider Pact tests # Remember: A microservice can be a consumer and a provider. # Always publish the results from pipeline
           command: |
-            ./gradlew pactTest -DpactPublishResults=true -Dpact.filter.consumers=<< pipeline.parameters.pact-consumer-name >> -Dpact.filter.pacturl=<< pipeline.parameters.pact-url >> --tests *ProviderPactTest
-      - run:
-          name: Run Provider Pact tests (all) # Remember: A microservice can be a consumer and a provider. # Always publish the results from pipeline
-          command: |
-            ./gradlew pactTest -DpactPublishResults=true --tests *ProviderPactTest
+            if << pipeline.parameters.pact-webhook >>
+            then
+              ./gradlew pactTest -DpactPublishResults=true -Dpact.filter.consumers=<< pipeline.parameters.pact-consumer-name >> -Dpact.filter.pacturl=<< pipeline.parameters.pact-url >> --tests *ProviderPactTest
+            else
+              ./gradlew pactTest -DpactPublishResults=true --tests *ProviderPactTest
+            fi
+
       - run:
           name: Can I deploy? # TODO: Start using environments.
           command: |
