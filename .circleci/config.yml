@@ -16,31 +16,40 @@ parameters:
   pact-url:
       type: string
       default: ""
-      
-jobs: # a collection of steps
-  build:
-    environment:
-      _JAVA_OPTIONS: "-Xmx3g"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+executors:
+  docker:
     docker:
       - image: cimg/openjdk:17.0.1 # ...with this image as the primary container; this is where all `steps` will run
         auth:
           username: nathandeamer
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-    steps: # a collection of executable commands
-      - checkout
-      - restore_cache:
-          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
-      - restore_cache:
-          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+
+jobs: # a collection of steps
+  echo:
+    description: Show parameters
+    executor: docker
+    steps:
       - run:
-          name: echo build parameters
+          name: echo parameters
           command: |
             echo "pact-consumer-name: << pipeline.parameters.pact-consumer-name >>"
             echo "pact-consumer-version-number: << pipeline.parameters.pact-consumer-version-number >>"
             echo "pact-consumer-version-tags: << pipeline.parameters.pact-consumer-version-tags >>"
             echo "pact-consumer-version-branch: << pipeline.parameters.pact-consumer-version-branch >>"
             echo "pact-url: << pipeline.parameters.pact-url >>"
+  validate:
+  build:
+    environment:
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+    executor: docker
+    steps: # a collection of executable commands
+      - checkout
+      - restore_cache:
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run:
           name: "Download pact-cli"
           command: |
@@ -88,10 +97,8 @@ jobs: # a collection of steps
           path: build/test-results/test
       - store_artifacts: # Upload test results for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: build/test-results/test
-          when: always
       - store_artifacts:
           path: build/pacts
-          when: always
 workflows:
   version: 2
   workflow:
