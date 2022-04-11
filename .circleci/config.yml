@@ -38,7 +38,6 @@ jobs: # a collection of steps
             echo "pact-consumer-version-tags: << pipeline.parameters.pact-consumer-version-tags >>"
             echo "pact-consumer-version-branch: << pipeline.parameters.pact-consumer-version-branch >>"
             echo "pact-url: << pipeline.parameters.pact-url >>"
-  validate:
   build:
     environment:
       _JAVA_OPTIONS: "-Xmx3g"
