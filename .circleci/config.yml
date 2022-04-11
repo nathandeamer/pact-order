@@ -16,6 +16,14 @@ jobs: # a collection of steps
       - restore_cache:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run:
+          name: echo build parameters
+          command: |
+            echo "pact-consumer-name: << pipeline.parameters.pact-consumer-name >>"
+            echo "pact-consumer-version-number: << pipeline.parameters.pact-consumer-version-number >>"
+            echo "pact-consumer-version-tags: << pipeline.parameters.pact-consumer-version-tags >>"
+            echo "pact-consumer-version-branch: << pipeline.parameters.pact-consumer-version-branch >>"
+            echo "pact-url: << pipeline.parameters.pact-url >>"
+      - run:
           name: "Download pact-cli"
           command: |
             curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.88.83/pact-1.88.83-linux-x86_64.tar.gz
