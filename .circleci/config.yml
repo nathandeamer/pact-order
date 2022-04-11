@@ -1,5 +1,8 @@
 version: 2.1
 parameters:
+  pact-webhook:
+    type: boolean
+    default: false
   pact-consumer-name:
     type: string
     default: "default"
@@ -63,7 +66,12 @@ jobs: # a collection of steps
               echo "No Consumer Pacts found. Continuing...."
             fi
       - run:
-          name: Run Provider Pact tests # Remember: A microservice can be a consumer and a provider. # Always publish the results from pipeline
+          name: Run Provider Pact tests (consumer triggered webhook)
+          when: << pipeline.parameters.pact-webhook >>
+          command: |
+            ./gradlew pactTest -DpactPublishResults=true -Dpact.filter.consumers=<< pipeline.parameters.pact-consumer-name >> -Dpact.filter.pacturl=<< pipeline.parameters.pact-url >> --tests *ProviderPactTest
+      - run:
+          name: Run Provider Pact tests (all) # Remember: A microservice can be a consumer and a provider. # Always publish the results from pipeline
           command: |
             ./gradlew pactTest -DpactPublishResults=true --tests *ProviderPactTest
       - run:

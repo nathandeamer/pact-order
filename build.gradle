@@ -70,6 +70,8 @@ pactTest {
 		setFailOnNoMatchingTests(false) // There won't always be consumer tests or provider tests
 	}
 
+	systemProperties System.properties // Important. Allow -D system properties for pact to be passed in.
+
 	if (System.getProperty('pactPublishResults') == 'true') {
 		systemProperty 'pact.provider.version', getGitHash()
 		systemProperty 'pact.provider.branch', getGitBranch()
