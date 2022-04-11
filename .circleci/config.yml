@@ -13,8 +13,8 @@ parameters:
     type: string
     default: "default"
   pact-url:
-      type: string
-      default: "default"
+    type: string
+    default: "default"
 
 jobs: # a collection of steps
   build:
