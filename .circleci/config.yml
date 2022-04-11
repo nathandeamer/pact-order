@@ -3,47 +3,39 @@ version: 2
 parameters:
   pact-consumer-name:
     type: string
-    default: ""
+    default: "default"
   pact-consumer-version-number:
     type: string
-    default: ""
+    default: "default"
   pact-consumer-version-tags:
     type: string
-    default: ""
+    default: "default"
   pact-consumer-version-branch:
     type: string
-    default: ""
+    default: "default"
   pact-url:
       type: string
-      default: ""
+      default: "default"
 
-executors:
-  docker:
+jobs: # a collection of steps
+  build:
+    environment:
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false"
     docker:
       - image: cimg/openjdk:17.0.1 # ...with this image as the primary container; this is where all `steps` will run
         auth:
           username: nathandeamer
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-
-jobs: # a collection of steps
-  echo:
-    description: Show parameters
-    executor: docker
-    steps:
+    steps: # a collection of executable commands
       - run:
-          name: echo parameters
+          name: echo build parameters
           command: |
             echo "pact-consumer-name: << pipeline.parameters.pact-consumer-name >>"
             echo "pact-consumer-version-number: << pipeline.parameters.pact-consumer-version-number >>"
             echo "pact-consumer-version-tags: << pipeline.parameters.pact-consumer-version-tags >>"
             echo "pact-consumer-version-branch: << pipeline.parameters.pact-consumer-version-branch >>"
             echo "pact-url: << pipeline.parameters.pact-url >>"
-  build:
-    environment:
-      _JAVA_OPTIONS: "-Xmx3g"
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-    executor: docker
-    steps: # a collection of executable commands
       - checkout
       - restore_cache:
           key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
