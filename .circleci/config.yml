@@ -96,4 +96,6 @@ workflows:
   workflow:
     jobs:
       - download-pact-cli
-      - build
+      - build:
+          requires:
+            - download-pact-cli
