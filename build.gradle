@@ -64,6 +64,14 @@ testSets {
 	}
 }
 
+static def getOrDefault(env, defaultVal) {
+	def val = System.getenv(env)
+	if (val == null || val.isEmpty()) {
+		val = defaultVal
+	}
+	return val
+}
+
 pactTest {
 	useJUnitPlatform()
 	filter {
@@ -76,6 +84,7 @@ pactTest {
 		systemProperty 'pact.provider.version', getGitHash()
 		systemProperty 'pact.provider.branch', getGitBranch()
 		systemProperty 'pact.provider.tag', getGitBranch()
+		systemProperty 'pact.verifier.buildUrl', getOrDefault("CIRCLE_BUILD_URL", "")
 		systemProperty 'pact.verifier.publishResults', 'true'
 	}
 }
