@@ -162,11 +162,17 @@ workflows:
       - deploy-to-dev:
           requires:
             - can-i-deploy
-      - deploy-to-staging:
+      - approval-deploy-to-staging:
           type: approval
           requires:
             - deploy-to-dev
-      - deploy-to-prod:
+      - deploy-to-staging:
+          requires:
+            - approval-deploy-to-staging
+      - approval-deploy-to-prod:
           type: approval
           requires:
             - deploy-to-staging
+      - deploy-to-prod:
+          requires:
+            - approval-deploy-to-prod
