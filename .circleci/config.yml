@@ -22,27 +22,26 @@ executors:
           username: nathandeamer
           password: $DOCKERHUB_PASSWORD
 
-jobs: # a collection of steps
-#  download-pact-cli: #Usually I would include this in my build docker image
-#    executor: docker
-#    steps:
-#      - run:
-#          name: "Download pact-cli"
-#          command: |
-#            curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.88.83/pact-1.88.83-linux-x86_64.tar.gz
-#            tar xzf pact-1.88.83-linux-x86_64.tar.gz
+jobs:
+  download-pact-cli: # Usually I would include this in my base docker image
+    executor: docker
+    steps:
+      - run:
+          name: "Download pact-cli"
+          command: |
+            curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.88.83/pact-1.88.83-linux-x86_64.tar.gz
+            tar xzf pact-1.88.83-linux-x86_64.tar.gz
   build:
     executor: docker
     environment:
       _JAVA_OPTIONS: "-Xmx3g"
       GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-    steps: # a collection of executable commands
+    steps:
       - checkout
       - restore_cache:
           key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
-
       - run:
           name: Run tests
           command: |
@@ -96,4 +95,5 @@ workflows:
   version: 2
   workflow:
     jobs:
+      - download-pact-cli
       - build
