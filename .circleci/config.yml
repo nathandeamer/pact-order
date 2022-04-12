@@ -23,16 +23,15 @@ executors:
           password: $DOCKERHUB_PASSWORD
     working_directory: "~"
 
-
 jobs: # a collection of steps
-  download-pact-cli: #Usually I would include this in my build docker image
-    executor: docker
-    steps:
-      - run:
-          name: "Download pact-cli"
-          command: |
-            curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.88.83/pact-1.88.83-linux-x86_64.tar.gz
-            tar xzf pact-1.88.83-linux-x86_64.tar.gz
+#  download-pact-cli: #Usually I would include this in my build docker image
+#    executor: docker
+#    steps:
+#      - run:
+#          name: "Download pact-cli"
+#          command: |
+#            curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.88.83/pact-1.88.83-linux-x86_64.tar.gz
+#            tar xzf pact-1.88.83-linux-x86_64.tar.gz
   build:
     executor: docker
     environment:
