@@ -17,7 +17,7 @@ parameters:
 executors:
   docker:
     docker:
-      - image: circleci/openjdk
+      - image: cimg/openjdk:17.0.1
         auth:
           username: nathandeamer
           password: $DOCKERHUB_PASSWORD
