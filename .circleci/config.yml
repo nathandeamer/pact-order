@@ -96,7 +96,7 @@ jobs:
       - persist_to_workspace:
           root: /home/circleci/project
           paths:
-            - $$CIRCLE_PROJECT_REPONAME
+            - $CIRCLE_PROJECT_REPONAME
   can-i-deploy:
     executor: docker
     steps:
