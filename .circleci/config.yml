@@ -32,9 +32,9 @@ jobs:
             curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.88.83/pact-1.88.83-linux-x86_64.tar.gz
             tar xzf pact-1.88.83-linux-x86_64.tar.gz
       - persist_to_workspace:
-          root: /home/circleci
+          root: ~/
           paths:
-            - project
+            - project/pact
   build:
     executor: docker
     environment:
@@ -94,14 +94,14 @@ jobs:
       - store_artifacts:
           path: build/pacts
       - persist_to_workspace:
-          root: /home/circleci
+          root: ~/
           paths:
             - project
   can-i-deploy:
     executor: docker
     steps:
       - attach_workspace: # Attached the pact cli to this job.
-          at: /home/circleci/project
+          at: ~/
       - run:
           name: Can I deploy?
           command: |
@@ -110,7 +110,7 @@ jobs:
     executor: docker
     steps:
       - attach_workspace: # Attached the pact cli to this job.
-          at: /home/circleci/project
+          at: ~/
       - run:
           name: Deploy to dev
           command: |
