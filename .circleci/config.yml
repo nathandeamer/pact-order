@@ -1,6 +1,7 @@
 # TODO:
 # 1. Run Provider Pact tests: For the pact-webhook flow we ONLY need to run the pact-provider tests step - this should really be done with conditional workflows - I've just been lazy.
-# 2. Can-I-Depploy: Use pact environments.
+# 2. Can-I-Deploy: Use pact environments.
+# 3.
 version: 2.1
 parameters:
   pact-webhook:
@@ -13,27 +14,37 @@ parameters:
     type: string
     default: "default"
 
+executors:
+  docker:
+    docker:
+      - image: cimg/openjdk:17.0.1
+        auth:
+          username: nathandeamer
+          password: $DOCKERHUB_PASSWORD
+    working_directory: "~"
+
+
 jobs: # a collection of steps
+  download-pact-cli: #Usually I would include this in my build docker image
+    executor: docker
+    steps:
+      - run:
+          name: "Download pact-cli"
+          command: |
+            curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.88.83/pact-1.88.83-linux-x86_64.tar.gz
+            tar xzf pact-1.88.83-linux-x86_64.tar.gz
   build:
+    executor: docker
     environment:
       _JAVA_OPTIONS: "-Xmx3g"
       GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-    docker:
-      - image: cimg/openjdk:17.0.1 # ...with this image as the primary container; this is where all `steps` will run
-        auth:
-          username: nathandeamer
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps: # a collection of executable commands
       - checkout
       - restore_cache:
           key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
-      - run:
-          name: "Download pact-cli"
-          command: |
-            curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.88.83/pact-1.88.83-linux-x86_64.tar.gz
-            tar xzf pact-1.88.83-linux-x86_64.tar.gz
+
       - run:
           name: Run tests
           command: |
