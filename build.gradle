@@ -75,6 +75,7 @@ pactTest {
 	if (System.getProperty('pactPublishResults') == 'true') {
 		systemProperty 'pact.provider.version', getGitHash()
 		systemProperty 'pact.provider.branch', getGitBranch()
+		systemProperty 'pact.provider.tag', getGitBranch()
 		systemProperty 'pact.verifier.publishResults', 'true'
 	}
 }
