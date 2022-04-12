@@ -32,7 +32,7 @@ jobs:
             curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.88.83/pact-1.88.83-linux-x86_64.tar.gz
             tar xzf pact-1.88.83-linux-x86_64.tar.gz
       - persist_to_workspace:
-          root: workspace
+          root: /home/circleci/project
           paths:
             - pact
   build:
@@ -42,7 +42,7 @@ jobs:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false"
     steps:
       - attach_workspace:
-          at: /
+          at: /home/circleci/project
       - checkout
       - restore_cache:
           key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
