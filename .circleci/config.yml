@@ -17,7 +17,7 @@ parameters:
 executors:
   docker:
     docker:
-      - image: cimg/openjdk:17.0.1
+      - image: circleci/openjdk
         auth:
           username: nathandeamer
           password: $DOCKERHUB_PASSWORD
@@ -68,12 +68,7 @@ jobs:
       - run:
           name: Run Provider Pact tests # Remember: A microservice can be a consumer and a provider. # Always publish the results from pipeline
           command: |
-            if << pipeline.parameters.pact-webhook >>
-            then
-              ./gradlew pactTest -DpactPublishResults=true -Dpact.filter.consumers=<< pipeline.parameters.pact-consumer-name >> -Dpact.filter.pacturl=<< pipeline.parameters.pact-url >> --tests *ProviderPactTest
-            else
               ./gradlew pactTest -DpactPublishResults=true --tests *ProviderPactTest
-            fi
       - save_cache:
           paths:
             - ~/.gradle/wrapper
@@ -97,6 +92,25 @@ jobs:
           root: ~/
           paths:
             - project
+
+  build-pact-provider-only:
+    executor: docker
+    environment:
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+    steps:
+      - checkout
+      - attach_workspace: # Attached the pact cli to this job.
+          at: /home/circleci/project
+      - restore_cache:
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+      - run:
+          name: Run Provider Pact tests # Remember: A microservice can be a consumer and a provider. # Always publish the results from pipeline
+          command: |
+              ./gradlew pactTest -DpactPublishResults=true -Dpact.filter.consumers=<< pipeline.parameters.pact-consumer-name >> -Dpact.filter.pacturl=<< pipeline.parameters.pact-url >> --tests *ProviderPactTest
+
   can-i-deploy:
     executor: docker
     steps:
@@ -150,7 +164,17 @@ jobs:
             ./pact/bin/pact-broker record-deployment --pacticipant=$CIRCLE_PROJECT_REPONAME --version=$CIRCLE_SHA1 --environment=prod
 workflows:
   version: 2
-  workflow:
+
+  pact-provider-webhook-workflow:
+    when: << pipeline.parameters.pact-webhook >>
+    jobs:
+      - download-pact-cli
+      - build-pact-provider-only:
+          requires:
+            - download-pact-cli
+
+  main-workflow:
+    when: not << pipeline.parameters.pact-webhook >>
     jobs:
       - download-pact-cli
       - build:
