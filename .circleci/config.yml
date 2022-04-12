@@ -174,7 +174,8 @@ workflows:
             - download-pact-cli
 
   main-workflow:
-    when: not << pipeline.parameters.pact-webhook >>
+    when:
+      not: << pipeline.parameters.pact-webhook >>
     jobs:
       - download-pact-cli
       - build:
