@@ -84,7 +84,6 @@ pactTest {
 		systemProperty 'pact.provider.version', getGitHash()
 		systemProperty 'pact.provider.branch', getGitBranch()
 		systemProperty 'pact.provider.tag', getGitBranch()
-		systemProperty 'pact.verifier.buildUrl', getOrDefault("CIRCLE_BUILD_URL", "")
 		systemProperty 'pact.verifier.publishResults', 'true'
 	}
 }
