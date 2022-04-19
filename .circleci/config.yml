@@ -107,7 +107,11 @@ jobs:
           name: Run Provider Pact tests # Remember: A microservice can be a consumer and a provider. # Always publish the results from pipeline
           command: |
             ./gradlew pactTest -DpactPublishResults=true -Dpact.filter.consumers=<< pipeline.parameters.pact-consumer-name >> -Dpact.filter.pacturl=<< pipeline.parameters.pact-url >> --tests *ProviderPactTest
-
+      - run:
+          name: Trigger consumer re-run workflow   # Now that the pacts have been verified - we should re-run the consumer workflow.
+          command: |
+            pact-build-url=<< pipeline.parameters.pact-build-url >>
+            curl -X POST 'https://circleci.com/api/v2/workflow/${pact-build-url##*/}/rerun' -H 'circle-token: $CIRCLE_TOKEN'
   can-i-deploy:
     executor: docker
     steps:
