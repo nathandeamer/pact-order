@@ -1,4 +1,4 @@
-# TODO: This pipeline needs a clean up.  Duplicated code / steps. Lots of downloading the pact-cli
+# TODO: This pipeline needs a clean up.  Duplicated code / steps. Lots of downloading the pact-cli.
 version: 2.1
 parameters:
   pact-webhook:
@@ -97,17 +97,13 @@ jobs:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false"
     steps:
       - run:
-          name: Echo pipeline params
+          name: (DEBUG) Echo pipeline params
           command: |
             echo "pact-webhook: << pipeline.parameters.pact-webhook >>"
             echo "pact-consumer-name: << pipeline.parameters.pact-consumer-name >>"
             echo "pact-consumer-branch: << pipeline.parameters.pact-consumer-branch >>"
             echo "pact-url: << pipeline.parameters.pact-url >>"
             echo "pact-build-url: << pipeline.parameters.pact-build-url >>"
-      - run:
-          name: Trigged by
-          command: |
-            echo "Triggered by:" << pipeline.parameters.pact-build-url >>
       - checkout
       - download-pact-cli
       - restore_cache:
@@ -119,10 +115,13 @@ jobs:
           command: |
             ./gradlew pactTest -DpactPublishResults=true -Dpact.filter.consumers=<< pipeline.parameters.pact-consumer-name >> -Dpact.filter.pacturl=<< pipeline.parameters.pact-url >> --tests *ProviderPactTest
       - run:
+          # Could be smarter here and use workflow id from the pact-build-url and the re-run workflow API: https://circleci.com/docs/api/v2/#operation/rerunWorkflow.
+          # If we wanted to be super smart there might be a way of putting an approval step (waiting for pact provider) and then approve the job from the provider flow.
           name: Trigger consumer workflow   # Now that the provider has verified the pacts - re-run the workflow for the branch.
           command: |
-            curl -f -X POST 'https://circleci.com/api/v2/project/github/nathandeamer/<< pipeline.parameters.pact-consumer-name >>/pipeline?circle-token=$CIRCLE_TOKEN' \
+            curl -f -X POST 'https://circleci.com/api/v2/project/github/nathandeamer/<< pipeline.parameters.pact-consumer-name >>/pipeline' \
               -H 'Content-Type: application/json' \
+              -H 'circle-token: '${CIRCLE_TOKEN}
               --data '{"branch": "<< pipeline.parameters.pact-consumer-branch >>"}'
   can-i-deploy:
     executor: docker
