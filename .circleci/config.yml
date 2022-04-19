@@ -97,6 +97,14 @@ jobs:
       GRADLE_OPTS: "-Dorg.gradle.daemon=false"
     steps:
       - run:
+          name: Echo pipeline params
+          command: |
+            echo "pact-webhook: << pipeline.parameters.pact-webhook >>"
+            echo "pact-consumer-name: << pipeline.parameters.pact-consumer-name >>"
+            echo "pact-consumer-branch: << pipeline.parameters.pact-consumer-branch >>"
+            echo "pact-url: << pipeline.parameters.pact-url >>"
+            echo "pact-build-url: << pipeline.parameters.pact-build-url >>"
+      - run:
           name: Trigged by
           command: |
             echo "Triggered by:" << pipeline.parameters.pact-build-url >>
