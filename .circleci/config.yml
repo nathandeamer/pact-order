@@ -7,6 +7,9 @@ parameters:
   pact-consumer-name:
     type: string
     default: "default"
+  pact-consumer-branch:
+    type: string
+    default: "main"
   pact-url:
     type: string
     default: "default"
@@ -108,12 +111,11 @@ jobs:
           command: |
             ./gradlew pactTest -DpactPublishResults=true -Dpact.filter.consumers=<< pipeline.parameters.pact-consumer-name >> -Dpact.filter.pacturl=<< pipeline.parameters.pact-url >> --tests *ProviderPactTest
       - run:
-          name: Trigger consumer re-run workflow   # Now that the pacts have been verified - we should re-run the consumer workflow.
+          name: Trigger consumer workflow   # Now that the provider has verified the pacts - re-run the workflow for the branch.
           command: |
-            pact-build-url=<< pipeline.parameters.pact-build-url >>
-            echo ${pact-build-url##*/}
-            echo ${<< pipeline.parameters.pact-build-url >>##*/}
-            curl -X POST 'https://circleci.com/api/v2/workflow/${pact-build-url##*/}/rerun' -H 'circle-token: $CIRCLE_TOKEN'
+            curl -X POST 'https://circleci.com/api/v2/project/github/nathandeamer/<< pipeline.parameters.pact-consumer-name >>/pipeline?circle-token=$CIRCLE_TOKEN' \
+              -H 'Content-Type: application/json' \
+              --data '{"branch": "<< pipeline.parameters.pact-consumer-branch >>"}'
   can-i-deploy:
     executor: docker
     steps:
