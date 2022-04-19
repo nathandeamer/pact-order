@@ -121,7 +121,7 @@ jobs:
       - run:
           name: Trigger consumer workflow   # Now that the provider has verified the pacts - re-run the workflow for the branch.
           command: |
-            curl -X POST 'https://circleci.com/api/v2/project/github/nathandeamer/<< pipeline.parameters.pact-consumer-name >>/pipeline?circle-token=$CIRCLE_TOKEN' \
+            curl -f -X POST 'https://circleci.com/api/v2/project/github/nathandeamer/<< pipeline.parameters.pact-consumer-name >>/pipeline?circle-token=$CIRCLE_TOKEN' \
               -H 'Content-Type: application/json' \
               --data '{"branch": "<< pipeline.parameters.pact-consumer-branch >>"}'
   can-i-deploy:
