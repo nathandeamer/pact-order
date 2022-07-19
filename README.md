@@ -14,7 +14,7 @@ export PACT_BROKER_TOKEN=NotMyRealBrokerToken
    or via [brew](https://github.com/pact-foundation/homebrew-pact-ruby-standalone)
 4. 
 ### Run (No publish) the provider tests:
-1. `/gradlew clean test --tests "*ProviderPactTest"`
+1. `/gradlew clean pactTest --tests "*ProviderPactTest"`
 
 ### Run and Publish the results of the provider tests:
 1. `./gradlew clean -DpactPublishResults=true test --tests "*ProviderPactTest"`  
