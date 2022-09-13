@@ -39,7 +39,9 @@ public class OrderProviderPactTest {
 
   @BeforeEach
   public void setupTestTarget(PactVerificationContext context) {
-    context.setTarget(new HttpTestTarget("localhost", 8080));
+    if (context != null) {
+      context.setTarget(new HttpTestTarget("localhost", 8080));
+    }
   }
 
   // Used to verify the wiremock consumer.
@@ -50,7 +52,9 @@ public class OrderProviderPactTest {
   @TestTemplate
   @ExtendWith(PactVerificationInvocationContextProvider.class)
   public void pactVerificationTestTemplate(PactVerificationContext context) {
-    context.verifyInteraction();
+    if (context != null) {
+      context.verifyInteraction();
+    }
   }
 
 }
