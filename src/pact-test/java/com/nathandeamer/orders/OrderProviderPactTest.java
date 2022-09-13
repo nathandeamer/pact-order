@@ -45,41 +45,12 @@ public class OrderProviderPactTest {
   // Used to verify the wiremock consumer.
   @BeforeEach
   public void setupProvider() {
-    when(ordersRepository.findById(eq(1234))).thenReturn(
-            Optional.of(CustomerOrder.builder()
-                    .id(1234)
-                    .items(Collections.singletonList(
-                            CustomerOrder.Item.builder()
-                                    .qty(1)
-                                    .description("New York City")
-                                    .sku("NYC")
-                                    .build()))
-                    .build()));
   }
 
   @TestTemplate
   @ExtendWith(PactVerificationInvocationContextProvider.class)
   public void pactVerificationTestTemplate(PactVerificationContext context) {
     context.verifyInteraction();
-  }
-
-  @State("An order exists")
-  public Map<String, Object> orderExists() {
-      int orderNumber = 999666;
-      when(ordersRepository.findById(999666)).thenReturn(
-              Optional.of(CustomerOrder.builder()
-                    .id(101)
-                    .items(Collections.singletonList(
-                            CustomerOrder.Item.builder()
-                                    .qty(1)
-                                    .description("Some Description")
-                                    .sku("POP")
-                                    .build()))
-                    .build()));
-
-    Map<String, Object> map = new HashMap<>();
-    map.put("orderNumber", orderNumber);
-    return map;
   }
 
 }
