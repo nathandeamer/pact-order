@@ -44,6 +44,25 @@ public class OrderProviderPactTest {
     }
   }
 
+  @State("An order exists")
+  public Map<String, Object> orderExists() {
+    int orderNumber = 999666;
+    when(ordersRepository.findById(999666)).thenReturn(
+            Optional.of(CustomerOrder.builder()
+                    .id(101)
+                    .items(Collections.singletonList(
+                            CustomerOrder.Item.builder()
+                                    .qty(1)
+                                    .description("Some Description")
+                                    .sku("POP")
+                                    .build()))
+                    .build()));
+
+    Map<String, Object> map = new HashMap<>();
+    map.put("orderNumber", orderNumber);
+    return map;
+  }
+
   // Used to verify the wiremock consumer.
   @BeforeEach
   public void setupProvider() {
